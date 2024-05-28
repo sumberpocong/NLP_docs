@@ -1,0 +1,41 @@
+function updateForm() {
+  // nama sheet dan url
+  const sheetName = '[sheet name]';
+  const spreadsheetUrl = '[spreadsheet link]';
+
+  // sheet access
+  const spreadsheet = SpreadsheetApp.openByUrl(spreadsheetUrl);
+  const sheet = spreadsheet.getSheetByName(sheetName);
+
+  // for checking wether the sheet is found
+  // if (!sheet) {
+  //  Logger.log(`Sheet with name '${sheetName}' not found.`);
+  //  return;
+  // }
+
+  const lastRow = sheet.getLastRow();
+
+  // employee data
+  let pelanggarList = [];
+  const pelanggarData = sheet.getRange(`B2:B${lastRow}`).getValues();
+
+  // input variabel pelanggarList
+  pelanggarData.forEach(el => {
+    // jika semua kolom terisi
+    if (el[0]) {  // if more than one column -> && el[1] && el[2] && and so on
+      // cegah data ganda
+      if (pelanggarList.indexOf(`${el[0]}`) === -1) {  // if more than one column -> - ${el[1]} - ${el[2] - and so on
+        // add employee data to array pelanggarList
+        pelanggarList.push(`${el[0]}`);
+      }
+    }
+  });
+
+  // form access
+  const formUrl = '[google form link]';
+  const form = FormApp.openByUrl(formUrl);
+
+  // renew dropdown option
+  const pelanggarDropdown = form.getItemById('[question object id on google form web]').asListItem();
+  pelanggarDropdown.setChoiceValues(pelanggarList);
+}
